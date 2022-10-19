@@ -142,7 +142,7 @@ export const levels: FastifyPluginAsync = async (server) => {
             width: '100%',
             height: '100%',
             display: 'flex',
-            fontFamily: 'Quicksand',
+            fontFamily: 'Quicksand, MPlusRounded1c',
           }}
         >
           <img

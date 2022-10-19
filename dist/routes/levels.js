@@ -64,7 +64,7 @@ export const levels = async (server) => {
                 width: '100%',
                 height: '100%',
                 display: 'flex',
-                fontFamily: 'Quicksand',
+                fontFamily: 'Quicksand, MPlusRounded1c',
             }, children: [_jsx("img", { style: {
                         position: 'absolute',
                         top: '50%',

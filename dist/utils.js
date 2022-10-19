@@ -27,6 +27,42 @@ export const fonts = [
         style: 'normal',
         weight: 500,
     },
+    {
+        name: 'MPlusRounded1c',
+        data: await readFile(path.join(fontsDir, 'MPlusRounded1c', 'MPLUSRounded1c-Light.ttf')),
+        style: 'normal',
+        weight: 300,
+    },
+    {
+        name: 'MPlusRounded1c',
+        data: await readFile(path.join(fontsDir, 'MPlusRounded1c', 'MPLUSRounded1c-Regular.ttf')),
+        style: 'normal',
+        weight: 400,
+    },
+    {
+        name: 'MPlusRounded1c',
+        data: await readFile(path.join(fontsDir, 'MPlusRounded1c', 'MPLUSRounded1c-Medium.ttf')),
+        style: 'normal',
+        weight: 500,
+    },
+    {
+        name: 'NanumSquareRound',
+        data: await readFile(path.join(fontsDir, 'NanumSquareRound', 'NanumSquareRoundL.ttf')),
+        style: 'normal',
+        weight: 300,
+    },
+    {
+        name: 'NanumSquareRound',
+        data: await readFile(path.join(fontsDir, 'NanumSquareRound', 'NanumSquareRoundR.ttf')),
+        style: 'normal',
+        weight: 400,
+    },
+    {
+        name: 'NanumSquareRound',
+        data: await readFile(path.join(fontsDir, 'NanumSquareRound', 'NanumSquareRoundB.ttf')),
+        style: 'normal',
+        weight: 500,
+    },
 ];
 const youtubeIdRegex = /^.*(?:youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#&?]*).*/;
 export const getYoutubeVideoId = (url) => youtubeIdRegex.exec(url)?.[1] ?? '';
