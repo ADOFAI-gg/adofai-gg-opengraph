@@ -3,6 +3,8 @@ import { levels } from './routes/levels.js'
 
 const server = fastify()
 
+server.get('/', () => 'Hello, world!')
+
 await server.register(levels)
 
 console.log(
