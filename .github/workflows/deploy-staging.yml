@@ -26,7 +26,6 @@ jobs:
           context: .
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:staging
           push: true
-          build-args: API_ENDPOINT=${{ secrets.API_ENDPOINT }}
       - name: Send update signal to kubernetes
         run: bash ./deploy/staging/deploy.sh
         env:
