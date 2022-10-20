@@ -48,9 +48,9 @@ interface Member {
   name: string
 }
 
-const iconCache = new Map<number, Promise<string>>()
+const difficultyIconCacheCache = new Map<number, Promise<string>>()
 
-const loadIcon = async (difficulty: number) => {
+const loadDifficultyIcon = async (difficulty: number) => {
   const { data } = await axios.get(
     `https://raw.githubusercontent.com/ADOFAI-gg/Adofai-gg-assets/main/difficultyIcons/${difficulty}.svg`
   )
@@ -113,6 +113,23 @@ const StatItem: React.FC<{
   )
 }
 
+// Cache all icons
+
+const difficultiesToCache = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 18.5, 19,
+  19.5, 20, 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7, 20.8, 20.9, 21,
+]
+
+const promises = []
+
+for (const d of difficultiesToCache) {
+  const pr = loadDifficultyIcon(d)
+  promises.push(pr)
+  difficultyIconCacheCache.set(d, pr)
+}
+
+await Promise.all(promises)
+
 export const levels: FastifyPluginAsync = async (server) => {
   server.get<{
     Params: Static<typeof schema>
@@ -129,11 +146,20 @@ export const levels: FastifyPluginAsync = async (server) => {
 
       const { data: level } = await api.get<Level>(`/levels/${req.params.id}`)
 
-      let difficultyIcon = iconCache.get(level.difficulty)
+      let difficultyIcon = difficultyIconCacheCache.get(level.difficulty)
 
       if (!difficultyIcon) {
-        difficultyIcon = loadIcon(level.difficulty)
-        iconCache.set(level.difficulty, difficultyIcon)
+        difficultyIcon = loadDifficultyIcon(level.difficulty)
+        difficultyIconCacheCache.set(level.difficulty, difficultyIcon)
+      }
+
+      const tags: {
+        id: string
+        color: string
+      }[] = []
+
+      for (const tag of level.tags) {
+        console.log(tag.id)
       }
 
       const svg = await satori(
