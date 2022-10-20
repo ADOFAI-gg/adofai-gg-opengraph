@@ -349,10 +349,10 @@ export const levels: FastifyPluginAsync = async (server) => {
                   }}
                 >
                   <div style={{ display: 'flex' }}>
-                    {level.music.artists.map((x) => x.name)}
+                    {level.music.artists.map((x) => x.name).join(' & ')}
                   </div>
                   <div style={{ marginTop: 4, display: 'flex' }}>
-                    {level.creators.map((x) => x.name)}
+                    {level.creators.map((x) => x.name).join(' & ')}
                   </div>
                 </div>
               </div>
