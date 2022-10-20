@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: adofai-gg
+  name: opengraph-staging
+  labels:
+    app: opengraph-staging
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: opengraph-staging
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: opengraph-staging
+    spec:
+      containers:
+        - name: opengraph-staging
+          image: ghcr.io/adofai-gg/opengraph:staging
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+          livenessProbe:
+            httpGet:
+              port: 5000
+              path: /
+      imagePullSecrets:
+        - name: registry-credentials
