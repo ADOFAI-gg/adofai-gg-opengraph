@@ -191,6 +191,14 @@ export const levels: FastifyPluginAsync = async (server) => {
         tagIds.push('SW')
       }
 
+      let length = 'Medium'
+
+      if (level.difficulty === 0.1) {
+        length = 'Short'
+      } else if (level.tags.some((x) => x.id === 11)) {
+        length = 'Long'
+      }
+
       for (const id of tagIds) {
         if (excludedTags.includes(id)) continue
 
@@ -378,7 +386,7 @@ export const levels: FastifyPluginAsync = async (server) => {
                   width: '100%',
                 }}
               >
-                <StatItem spacing label="Song Length" value="Unknown" />
+                <StatItem spacing label="Song Length" value={length} />
                 <StatItem
                   spacing
                   label="BPM"
