@@ -4,6 +4,8 @@ import fastifyCaching from '@fastify/caching'
 
 const server = fastify()
 
+server.get('/', () => 'Hello, world!')
+
 await server.register(levels)
 
 console.log(
