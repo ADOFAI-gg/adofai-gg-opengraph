@@ -28,6 +28,8 @@ interface Level {
   tiles: number
   video: string
   tags: Tag[]
+
+  epilepsyWarning: boolean
 }
 
 interface Tag {
@@ -48,14 +50,42 @@ interface Member {
   name: string
 }
 
-const difficultyIconCacheCache = new Map<number, Promise<string>>()
+const difficultyIconCache = new Map<number, Promise<string>>()
 
 const loadDifficultyIcon = async (difficulty: number) => {
   const { data } = await axios.get(
     `https://raw.githubusercontent.com/ADOFAI-gg/Adofai-gg-assets/main/difficultyIcons/${difficulty}.svg`
   )
 
-  return await svg2png(data)
+  return `data:image/png;base64,${(
+    await sharp(Buffer.from(data)).resize(48, 48).png().toBuffer()
+  ).toString('base64')}`
+}
+
+const tagIconCache = new Map<string, Promise<string>>()
+
+const highlightedTags: string[] = ['4', 'SW']
+
+const excludedTags: string[] = ['11', '1']
+
+const loadTagIcon = async (tag: string) => {
+  let { data } = await axios.get<string>(
+    `https://raw.githubusercontent.com/ADOFAI-gg/Adofai-gg-assets/main/tagIcons/${tag}.svg`
+  )
+
+  if (highlightedTags.includes(tag)) {
+    data = data
+      .replaceAll('fill="white"', 'fill="#F54F51"')
+      .replaceAll('stroke="white"', 'stroke="#F54F51"')
+  } else if (tag === '25') {
+    data = data
+      .replaceAll('fill="white"', 'fill="#FFE76E"')
+      .replaceAll('stroke="white"', 'stroke="#FFE76E"')
+  }
+
+  return `data:image/png;base64,${(
+    await sharp(Buffer.from(data)).resize(28, 28).png().toBuffer()
+  ).toString('base64')}`
 }
 
 const svg2png = async (svg: string) =>
@@ -125,7 +155,7 @@ const promises = []
 for (const d of difficultiesToCache) {
   const pr = loadDifficultyIcon(d)
   promises.push(pr)
-  difficultyIconCacheCache.set(d, pr)
+  difficultyIconCache.set(d, pr)
 }
 
 await Promise.all(promises)
@@ -146,21 +176,40 @@ export const levels: FastifyPluginAsync = async (server) => {
 
       const { data: level } = await api.get<Level>(`/levels/${req.params.id}`)
 
-      let difficultyIcon = difficultyIconCacheCache.get(level.difficulty)
+      let difficultyIcon = difficultyIconCache.get(level.difficulty)
 
       if (!difficultyIcon) {
         difficultyIcon = loadDifficultyIcon(level.difficulty)
-        difficultyIconCacheCache.set(level.difficulty, difficultyIcon)
+        difficultyIconCache.set(level.difficulty, difficultyIcon)
       }
 
-      const tags: {
-        id: string
-        color: string
-      }[] = []
+      const tags: string[] = []
+      const highlightedTagUrls: string[] = []
 
-      for (const tag of level.tags) {
-        console.log(tag.id)
+      const tagIds = level.tags.map((x) => `${x.id}`)
+
+      if (level.epilepsyWarning) {
+        tagIds.push('SW')
       }
+
+      for (const id of tagIds) {
+        if (excludedTags.includes(id)) continue
+
+        let tagIcon = tagIconCache.get(id)
+
+        if (!tagIcon) {
+          tagIcon = loadTagIcon(id)
+          tagIconCache.set(id, tagIcon)
+        }
+
+        if (highlightedTags.includes(id)) {
+          highlightedTagUrls.push(await tagIcon)
+        } else {
+          tags.push(await tagIcon)
+        }
+      }
+
+      tags.push(...highlightedTagUrls)
 
       const svg = await satori(
         <div
@@ -169,6 +218,7 @@ export const levels: FastifyPluginAsync = async (server) => {
             height: '100%',
             display: 'flex',
             fontFamily: 'Quicksand, MPlusRounded1c',
+            whiteSpace: 'nowrap',
           }}
         >
           <img
@@ -184,6 +234,33 @@ export const levels: FastifyPluginAsync = async (server) => {
             width="100%"
             alt="thumbnail"
           />
+          {tags.length ? (
+            <div
+              style={{
+                position: 'absolute',
+                right: 28,
+                top: 28,
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                borderRadius: 12,
+                padding: '16px 30px',
+                color: '#fff',
+                display: 'flex',
+              }}
+            >
+              {tags.map((x, i) => (
+                <img
+                  alt="icon"
+                  style={{
+                    marginLeft: i ? 8 : 0,
+                  }}
+                  src={x}
+                  key={i}
+                  width={28}
+                  height={28}
+                />
+              ))}
+            </div>
+          ) : null}
           <div
             style={{
               background: 'rgba(0, 0, 0, 0.8)',
@@ -234,7 +311,15 @@ export const levels: FastifyPluginAsync = async (server) => {
               }}
             >
               <div
-                style={{ fontSize: 28, fontWeight: 500, lineHeight: '28px' }}
+                style={{
+                  fontSize: 28,
+                  fontWeight: 500,
+                  lineHeight: '28px',
+                  overflow: 'hidden',
+                  width: '100%',
+                  textOverflow: 'ellipsis',
+                  paddingRight: 32,
+                }}
               >
                 {level.title}
               </div>
