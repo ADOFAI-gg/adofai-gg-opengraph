@@ -2,12 +2,16 @@ import { FastifyPluginAsync } from 'fastify'
 import { Static, Type } from '@sinclair/typebox'
 import satori from 'satori'
 import { api, fonts, getYoutubeVideoId } from '../utils.js'
-import sharp from 'sharp'
+import { renderAsync } from '@resvg/resvg-js'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import DayJsTimezone from 'dayjs/plugin/timezone.js'
 import DayJsUTC from 'dayjs/plugin/utc.js'
 import React from 'react'
+import fetch from 'node-fetch'
+
+// @ts-expect-error
+global.fetch = fetch
 
 dayjs.extend(DayJsUTC)
 dayjs.extend(DayJsTimezone)
@@ -53,13 +57,7 @@ interface Member {
 const difficultyIconCache = new Map<number, Promise<string>>()
 
 const loadDifficultyIcon = async (difficulty: number) => {
-  const { data } = await axios.get(
-    `https://raw.githubusercontent.com/ADOFAI-gg/Adofai-gg-assets/main/difficultyIcons/${difficulty}.svg`
-  )
-
-  return `data:image/png;base64,${(
-    await sharp(Buffer.from(data)).resize(48, 48).png().toBuffer()
-  ).toString('base64')}`
+  return `https://raw.githubusercontent.com/ADOFAI-gg/Adofai-gg-assets/main/difficultyIcons/${difficulty}.svg`
 }
 
 const tagIconCache = new Map<string, Promise<string>>()
@@ -84,14 +82,19 @@ const loadTagIcon = async (tag: string) => {
   }
 
   return `data:image/png;base64,${(
-    await sharp(Buffer.from(data)).resize(28, 28).png().toBuffer()
-  ).toString('base64')}`
+    await renderAsync(data, {
+      fitTo: {
+        mode: 'width',
+        value: 28,
+      },
+    })
+  )
+    .asPng()
+    .toString('base64')}`
 }
 
 const svg2png = async (svg: string) =>
-  `data:image/png;base64,${(
-    await sharp(Buffer.from(svg)).png().toBuffer()
-  ).toString('base64')}`
+  `data:image/png;base64,${(await renderAsync(svg)).asPng().toString('base64')}`
 
 const logo =
   await svg2png(`<svg width="96" height="12" viewBox="0 0 96 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -142,23 +145,6 @@ const StatItem: React.FC<{
     </div>
   )
 }
-
-// Cache all icons
-
-const difficultiesToCache = [
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 18.5, 19,
-  19.5, 20, 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7, 20.8, 20.9, 21,
-]
-
-const promises = []
-
-for (const d of difficultiesToCache) {
-  const pr = loadDifficultyIcon(d)
-  promises.push(pr)
-  difficultyIconCache.set(d, pr)
-}
-
-await Promise.all(promises)
 
 export const levels: FastifyPluginAsync = async (server) => {
   server.get<{
@@ -418,7 +404,7 @@ export const levels: FastifyPluginAsync = async (server) => {
         }
       )
 
-      const buffer = await sharp(Buffer.from(svg)).png().toBuffer()
+      const buffer = (await renderAsync(Buffer.from(svg))).asPng()
 
       return reply.header('Content-Type', 'image/png').send(buffer)
     }
