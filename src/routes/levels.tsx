@@ -401,6 +401,7 @@ export const levels: FastifyPluginAsync = async (server) => {
           width: 960,
           height: 540,
           fonts,
+          debug: process.env.DEBUG === 'true',
         }
       )
 
