@@ -2,20 +2,24 @@
   "name": "adofai-gg-opengraph",
   "packageManager": "yarn@3.2.4",
   "devDependencies": {
+    "@types/minio": "^7",
     "@types/node": "^18.11.2",
     "@types/react": "^18",
     "concurrently": "^7.4.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
+    "tslib": "^2.4.0",
     "typescript": "^4.8.4"
   },
   "dependencies": {
+    "@fastify/caching": "^8.0.1",
     "@resvg/resvg-js": "^2.1.0",
     "@sinclair/typebox": "^0.24.47",
     "axios": "^1.1.3",
     "dayjs": "^1.11.5",
     "dotenv": "^16.0.3",
     "fastify": "^4.9.2",
+    "minio": "^7.0.32",
     "node-fetch": "^3.2.10",
     "react": "^18.2.0",
     "satori": "^0.0.42"

@@ -9,6 +9,8 @@ import DayJsTimezone from 'dayjs/plugin/timezone.js'
 import DayJsUTC from 'dayjs/plugin/utc.js'
 import React from 'react'
 import fetch from 'node-fetch'
+import { getObject, putObject, s3Bucket } from '../minio.js'
+import { IncomingMessage } from 'http'
 
 // @ts-expect-error
 global.fetch = fetch
@@ -157,10 +159,21 @@ export const levels: FastifyPluginAsync = async (server) => {
       },
     },
     async (req, reply) => {
-      if (isNaN(Number(req.params.id)))
-        return reply.status(400).send('Invalid ID')
+      const id = Number(req.params.id)
+      if (isNaN(id)) return reply.status(400).send('Invalid ID')
 
-      const { data: level } = await api.get<Level>(`/levels/${req.params.id}`)
+      reply.header('Cache-Control', 'max-age=86400')
+
+      const key = `levels/${id}`
+
+      try {
+        const obj = (await getObject(s3Bucket, key)) as IncomingMessage
+
+        reply.type('image/png')
+        return reply.send(obj)
+      } catch (e) {}
+
+      const { data: level } = await api.get<Level>(`/levels/${id}`)
 
       let difficultyIcon = difficultyIconCache.get(level.difficulty)
 
@@ -406,6 +419,8 @@ export const levels: FastifyPluginAsync = async (server) => {
       )
 
       const buffer = (await renderAsync(Buffer.from(svg))).asPng()
+
+      await putObject(s3Bucket, key, buffer)
 
       return reply.header('Content-Type', 'image/png').send(buffer)
     }

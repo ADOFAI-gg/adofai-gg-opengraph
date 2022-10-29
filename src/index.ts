@@ -1,5 +1,6 @@
 import fastify from 'fastify'
 import { levels } from './routes/levels.js'
+import fastifyCaching from '@fastify/caching'
 
 const server = fastify()
 
