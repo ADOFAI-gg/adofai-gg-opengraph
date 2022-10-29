@@ -31,28 +31,28 @@ spec:
             - name: API_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  key: opengraph-staging-secrets
-                  name: apiEndpoint
+                  key: apiEndpoint
+                  name: opengraph-staging-secrets
             - name: S3_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  key: opengraph-staging-secrets
-                  name: s3Endpoint
+                  key: s3Endpoint
+                  name: opengraph-staging-secrets
             - name: S3_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  key: opengraph-staging-secrets
-                  name: s3AccessKey
+                  key: s3AccessKey
+                  name: opengraph-staging-secrets
             - name: S3_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  key: opengraph-staging-secrets
-                  name: s3SecretKey
+                  key: s3SecretKey
+                  name: opengraph-staging-secrets
             - name: S3_BUCKET
               valueFrom:
                 secretKeyRef:
-                  key: opengraph-staging-secrets
-                  name: s3Bucket
+                  key: s3Bucket
+                  name: opengraph-staging-secrets
           resources:
             limits:
               memory: '1Gi'
