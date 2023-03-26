@@ -27,6 +27,8 @@ interface Level {
   title: string
   difficulty: number
 
+  censored: boolean
+
   creators: Member[]
 
   music: Music
@@ -174,6 +176,8 @@ export const levels: FastifyPluginAsync = async (server) => {
       } catch (e) {}
 
       const { data: level } = await api.get<Level>(`/levels/${id}`)
+
+      if (level.censored) level.difficulty = -2
 
       let difficultyIcon = difficultyIconCache.get(level.difficulty)
 
