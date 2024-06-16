@@ -4,12 +4,12 @@ RUN mkdir -p /app
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN corepack enable && yarn --frozen-lockfile
+RUN corepack enable && pnpm i --frozen-lockfile
 
 COPY . .
 
-RUN yarn build
+RUN pnpm build
 
-CMD yarn prod
+CMD pnpm prod
