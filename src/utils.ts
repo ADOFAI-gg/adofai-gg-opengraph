@@ -1,95 +1,70 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { SatoriOptions } from 'satori'
-import { readFile } from 'fs/promises'
-import 'dotenv/config'
 import Axios from 'axios'
+import { Font } from 'satori'
+import { readFile } from 'fs/promises'
 
 export const resourcesDir = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
-  '../resources'
+  '../resources',
 )
 
 export const fontsDir = path.join(resourcesDir, 'fonts')
+const ibmPlexSansKRDir = path.join(fontsDir, 'IBMPlexSansKR')
+const ibmPlexSansJPDir = path.join(fontsDir, 'IBMPlexSansJP')
+
+export const satoriFonts: Font[] = [
+  {
+    name: 'IBM Plex Sans KR',
+    data: await readFile(
+      path.join(ibmPlexSansKRDir, 'IBMPlexSansKR-Regular.ttf'),
+    ),
+    weight: 400,
+    style: 'normal',
+  },
+  {
+    name: 'IBM Plex Sans KR',
+    data: await readFile(
+      path.join(ibmPlexSansKRDir, 'IBMPlexSansKR-Medium.ttf'),
+    ),
+    weight: 500,
+    style: 'normal',
+  },
+  {
+    name: 'IBM Plex Sans KR',
+    data: await readFile(path.join(ibmPlexSansKRDir, 'IBMPlexSansKR-Bold.ttf')),
+    weight: 700,
+    style: 'normal',
+  },
+
+  // JP
+  {
+    name: 'IBM Plex Sans JP',
+    data: await readFile(
+      path.join(ibmPlexSansJPDir, 'IBMPlexSansJP-Regular.ttf'),
+    ),
+    weight: 400,
+    style: 'normal',
+  },
+  {
+    name: 'IBM Plex Sans JP',
+    data: await readFile(
+      path.join(ibmPlexSansJPDir, 'IBMPlexSansJP-Medium.ttf'),
+    ),
+    weight: 500,
+    style: 'normal',
+  },
+  {
+    name: 'IBM Plex Sans JP',
+    data: await readFile(path.join(ibmPlexSansJPDir, 'IBMPlexSansJP-Bold.ttf')),
+    weight: 700,
+    style: 'normal',
+  },
+]
 
 export const api = Axios.create({
   baseURL: process.env.API_ENDPOINT + '/api/v1',
 })
-
-export const fonts: SatoriOptions['fonts'] = [
-  {
-    name: 'Quicksand',
-    data: await readFile(
-      path.join(fontsDir, 'Quicksand', 'Quicksand-Light.ttf')
-    ),
-    style: 'normal',
-    weight: 300,
-  },
-  {
-    name: 'Quicksand',
-    data: await readFile(
-      path.join(fontsDir, 'Quicksand', 'Quicksand-Regular.ttf')
-    ),
-    style: 'normal',
-    weight: 400,
-  },
-  {
-    name: 'Quicksand',
-    data: await readFile(
-      path.join(fontsDir, 'Quicksand', 'Quicksand-Medium.ttf')
-    ),
-    style: 'normal',
-    weight: 500,
-  },
-  {
-    name: 'MPlusRounded1c',
-    data: await readFile(
-      path.join(fontsDir, 'MPlusRounded1c', 'MPLUSRounded1c-Light.ttf')
-    ),
-    style: 'normal',
-    weight: 300,
-  },
-  {
-    name: 'MPlusRounded1c',
-    data: await readFile(
-      path.join(fontsDir, 'MPlusRounded1c', 'MPLUSRounded1c-Regular.ttf')
-    ),
-    style: 'normal',
-    weight: 400,
-  },
-  {
-    name: 'MPlusRounded1c',
-    data: await readFile(
-      path.join(fontsDir, 'MPlusRounded1c', 'MPLUSRounded1c-Medium.ttf')
-    ),
-    style: 'normal',
-    weight: 500,
-  },
-  {
-    name: 'NanumSquareRound',
-    data: await readFile(
-      path.join(fontsDir, 'NanumSquareRound', 'NanumSquareRoundL.ttf')
-    ),
-    style: 'normal',
-    weight: 300,
-  },
-  {
-    name: 'NanumSquareRound',
-    data: await readFile(
-      path.join(fontsDir, 'NanumSquareRound', 'NanumSquareRoundR.ttf')
-    ),
-    style: 'normal',
-    weight: 400,
-  },
-  {
-    name: 'NanumSquareRound',
-    data: await readFile(
-      path.join(fontsDir, 'NanumSquareRound', 'NanumSquareRoundB.ttf')
-    ),
-    style: 'normal',
-    weight: 500,
-  },
-]
 
 const youtubeIdRegex =
   /^.*(?:youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#&?]*).*/
