@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url'
 import Axios from 'axios'
 import { Font } from 'satori'
 import { readFile } from 'fs/promises'
+import { Level } from './types.js'
 
 export const resourcesDir = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -71,3 +72,9 @@ const youtubeIdRegex =
 
 export const getYoutubeVideoId = (url: string) =>
   youtubeIdRegex.exec(url)?.[1] ?? ''
+
+export const getDifficulty = (level: Level) => {
+  if (level.censored) return -2
+
+  return level.difficulty
+}

@@ -2,6 +2,8 @@ import React from 'react'
 import { Level } from '../../types.js'
 import { CardBackground } from '../components/CardBackground.js'
 import { getYoutubeVideoId } from '../../utils.js'
+import { LevelMetadataArea } from '../components/LevelMetadataArea.js'
+import { LevelDetailsArea } from '../components/LevelDetailsArea.js'
 
 export const LevelImage: React.FC<{
   level: Level
@@ -18,6 +20,8 @@ export const LevelImage: React.FC<{
       <CardBackground
         url={`https://i.ytimg.com/vi/${getYoutubeVideoId(level.video)}/original.jpg`}
       />
+      <LevelMetadataArea level={level} />
+      <LevelDetailsArea level={level} />
     </div>
   )
 }

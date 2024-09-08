@@ -6,6 +6,7 @@ import DayJsUTC from 'dayjs/plugin/utc.js'
 import fetch from 'node-fetch'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { generateSVG } from '../generator/index.js'
+import { renderAsync } from '@resvg/resvg-js'
 
 // @ts-expect-error
 global.fetch = fetch
@@ -42,7 +43,10 @@ export const levels: FastifyPluginAsync = async (_server) => {
         return reply.header('Content-Type', 'image/svg+xml').send(generated)
       }
 
-      return reply.header('Content-Type', 'image/png').send('')
+      const generated = await generateSVG(id)
+      const img = (await renderAsync(generated)).asPng()
+
+      return reply.header('Content-Type', 'image/png').send(img)
     },
   )
 }
