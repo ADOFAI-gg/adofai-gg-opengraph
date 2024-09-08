@@ -10,6 +10,8 @@ export const resourcesDir = path.join(
   '../resources',
 )
 
+export const tagIconsDir = path.join(resourcesDir, 'tagIcons')
+
 export const fontsDir = path.join(resourcesDir, 'fonts')
 const ibmPlexSansKRDir = path.join(fontsDir, 'IBMPlexSansKR')
 const ibmPlexSansJPDir = path.join(fontsDir, 'IBMPlexSansJP')

@@ -7,7 +7,14 @@ const LevelAuthors: React.FC<{ icon: string; members: string[] }> = ({
   members,
 }) => {
   return (
-    <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        gap: 4,
+        alignItems: 'center',
+        lineHeight: '120%',
+      }}
+    >
       <img src={icon} width={18} height={18} />
       <div>{members.join(' & ')}</div>
     </div>
@@ -34,7 +41,7 @@ export const LevelMetadataArea: React.FC<{ level: Level }> = ({ level }) => {
         style={{
           display: 'flex',
           filter:
-            'drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.4)) drop-shadow(0px 0px 32px rgba(0, 0, 0, 0.6))',
+            'drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.4)) drop-shadow(0px 0px 32px rgba(0, 0, 0, 0.8))',
           gap: 4,
           flexDirection: 'column',
         }}
@@ -63,6 +70,7 @@ export const LevelMetadataArea: React.FC<{ level: Level }> = ({ level }) => {
             fontSize: 48,
             fontWeight: 700,
             lineClamp: '2 "..."',
+            lineHeight: '120%',
           }}
         >
           {level.title}

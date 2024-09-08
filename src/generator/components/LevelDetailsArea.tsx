@@ -1,12 +1,55 @@
 import React from 'react'
 import { Level } from '../../types.js'
-import { getDifficulty } from '../../utils.js'
+import { getDifficulty, tagIconsDir } from '../../utils.js'
 import { icons } from '../../icons.js'
 import dayjs from 'dayjs'
+import { pathToFileURL } from 'url'
+import path from 'path'
+import { readFile } from 'fs/promises'
 
 const ignoredTags: string[] = ['11', '1']
 const warningTags: string[] = ['25']
 const dangerTags: string[] = ['4', 'sw']
+
+const allTags: string[] = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23',
+  '24',
+  '25',
+  'empty',
+  'sw',
+]
+
+const tagIconCache = new Map<string, string>()
+
+await Promise.all(
+  allTags.map(async (x) => {
+    const buf = await readFile(path.join(tagIconsDir, `${x}.png`))
+    const url = `data:image/png;base64,${buf.toString('base64')}`
+    tagIconCache.set(x, url)
+  }),
+)
 
 const LevelStat: React.FC<{
   label: React.ReactNode
@@ -91,7 +134,7 @@ export const LevelDetailsArea: React.FC<{ level: Level }> = ({ level }) => {
           display: 'flex',
           width: '100%',
           height: 72,
-          background: 'black',
+          background: 'rgba(0, 0, 0, 0.95)',
           borderRadius: 12,
           alignItems: 'center',
           position: 'relative',
@@ -146,23 +189,38 @@ export const LevelDetailsArea: React.FC<{ level: Level }> = ({ level }) => {
           }}
         >
           {tagIds.map((x, i) => (
-            <img
+            <div
               key={i}
-              src={`https://raw.githubusercontent.com/ADOFAI-gg/Adofai-gg-assets/main/tagIcons/${x}.svg`}
-              width={32}
-              height={32}
-              style={
-                dangerTags.includes(x)
-                  ? {
-                      filter: `invert(48%) sepia(70%) saturate(5132%) hue-rotate(332deg) brightness(97%) contrast(97%)`,
-                    }
+              style={{
+                width: 32,
+                height: 32,
+                maskImage: `url(${tagIconCache.get(x)})`,
+                background: dangerTags.includes(x)
+                  ? '#F54F51'
                   : warningTags.includes(x)
-                    ? {
-                        filter: `invert(75%) sepia(29%) saturate(638%) hue-rotate(6deg) brightness(112%) contrast(106%)`,
-                      }
-                    : {}
-              }
+                    ? '#FFE76E'
+                    : 'white',
+                maskRepeat: 'no-repeat',
+                maskSize: '32px 32px',
+              }}
             />
+            // <img
+            //   key={i}
+            //   src={`https://raw.githubusercontent.com/ADOFAI-gg/Adofai-gg-assets/main/tagIcons/${x}.svg`}
+            //   width={32}
+            //   height={32}
+            //   style={
+            //     dangerTags.includes(x)
+            //       ? {
+            //           filter: `invert(48%) sepia(70%) saturate(5132%) hue-rotate(332deg) brightness(97%) contrast(97%)`,
+            //         }
+            //       : warningTags.includes(x)
+            //         ? {
+            //             filter: `invert(75%) sepia(29%) saturate(638%) hue-rotate(6deg) brightness(112%) contrast(106%)`,
+            //           }
+            //         : {}
+            //   }
+            // />
           ))}
         </div>
       </div>

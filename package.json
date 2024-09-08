@@ -2,9 +2,9 @@
   "name": "adofai-gg-opengraph",
   "packageManager": "pnpm@9.3.0",
   "devDependencies": {
-    "@types/node": "^22.5.0",
-    "@types/react": "^18.3.4",
-    "concurrently": "^8.2.2",
+    "@types/node": "^22.5.4",
+    "@types/react": "^18.3.5",
+    "concurrently": "^9.0.0",
     "nodemon": "^3.1.4",
     "prettier": "^3.3.3",
     "tslib": "^2.7.0",
@@ -13,15 +13,15 @@
   "dependencies": {
     "@fastify/caching": "^8.4.0",
     "@fastify/type-provider-typebox": "^4.1.0",
-    "@resvg/resvg-js": "^2.6.2",
-    "@sinclair/typebox": "^0.33.7",
-    "axios": "^1.7.5",
+    "@sinclair/typebox": "^0.33.9",
+    "axios": "^1.7.7",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
     "node-fetch": "^3.3.2",
     "react": "^18.3.1",
-    "satori": "^0.10.14"
+    "satori": "^0.10.14",
+    "sharp": "^0.33.5"
   },
   "scripts": {
     "dev": "concurrently --handle-input \"tsc && nodemon dist\" \"tsc -w\"",

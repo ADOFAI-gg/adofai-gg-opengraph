@@ -6,7 +6,12 @@ import DayJsUTC from 'dayjs/plugin/utc.js'
 import fetch from 'node-fetch'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { generateSVG } from '../generator/index.js'
-import { renderAsync } from '@resvg/resvg-js'
+import sharp from 'sharp'
+import { mkdtemp, unlink, writeFile } from 'fs/promises'
+import { join } from 'path'
+import { tmpdir } from 'os'
+
+const instanceId = Date.now()
 
 // @ts-expect-error
 global.fetch = fetch
@@ -44,9 +49,19 @@ export const levels: FastifyPluginAsync = async (_server) => {
       }
 
       const generated = await generateSVG(id)
-      const img = (await renderAsync(generated)).asPng()
 
-      return reply.header('Content-Type', 'image/png').send(img)
+      const file = join(tmpdir(), `adofaigg-og-${instanceId}.${req.id}.svg`)
+
+      try {
+        await writeFile(file, generated)
+
+        const img = await sharp(file).png().toBuffer()
+        return reply.header('Content-Type', 'image/png').send(img)
+      } finally {
+        await unlink(file).catch((e) =>
+          console.warn('Failed to unlink image file', e),
+        )
+      }
     },
   )
 }
