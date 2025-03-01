@@ -18,7 +18,7 @@ export const LevelImage: React.FC<{
       }}
     >
       <CardBackground
-        url={`https://i.ytimg.com/vi/${getYoutubeVideoId(level.video)}/original.jpg`}
+        url={`https://i.ytimg.com/vi/${getYoutubeVideoId(level.video)}/maxresdefault.jpg`}
       />
       <LevelMetadataArea level={level} />
       <LevelDetailsArea level={level} />
